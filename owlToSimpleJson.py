@@ -1,8 +1,8 @@
 from pronto import Ontology
 import pprint as pp
-import re, sys
+import re, sys, os
 
-ontoFile = "/home/erwan/Documents/GIT_PERSO/ontology/owl_file/" + sys.argv[1] + ".owl"
+ontoFile = os.path.abspath("./owl_file/" + sys.argv[1] + ".owl")
 print("Use", ontoFile)
 myOnto = Ontology(ontoFile) 
 #myOnto = Ontology("/home/erwan/Documents/GIT_PERSO/ontology/owl_file/pw.owl") 
@@ -19,7 +19,7 @@ for curTerm in termArray:
     myTerm['_id'] = curTerm.id
     myTerm['name'] = curTerm.name
     myTerm['namespace'] = curTerm.namespace
-    myTerm['definition'] = re.sub(r'[^A-Za-z0-9]+',' ', str(curTerm.definition))
+    myTerm['definition'] = re.sub(r'[^A-Za-z0-9\.\,]+',' ', str(curTerm.definition))
     if curTerm.xrefs:
         try:
             iterator = map(lambda xref: xref.id, curTerm.xrefs )
