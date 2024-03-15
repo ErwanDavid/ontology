@@ -8,6 +8,7 @@ print("Use", ontoFile)
 myOnto = Ontology(ontoFile)
 
 conn = sqlite3.connect("onto01.db")
+<<<<<<< HEAD
 # require the table from crTable_onto.sql to exist
 
 def insertEntity(ID, name, ns, definition, definition_ref):
@@ -42,6 +43,26 @@ def insertSyn(mainID, synName):
     cur = conn.cursor()
     cur.execute(sql, synSet)
     conn.commit()
+=======
+
+
+def insertEntity(ID, name, ns, definition, definition_ref):
+    entitySet = (ID, name, ns, definition, definition_ref)
+    sql = ''' INSERT INTO entity(id,name, namespace, definition, definition_ref)
+              VALUES(?,?,?,?,?) '''
+    cur = conn.cursor()
+    cur.execute(sql, entitySet)
+    conn.commit()
+
+def insertXref(mainID, refID):
+    xrefSet=(mainID, refID)
+    sql = ''' INSERT INTO xref(main_ID,xref_ID)
+              VALUES(?,?) '''
+    cur = conn.cursor()
+    cur.execute(sql, xrefSet)
+    conn.commit()
+
+>>>>>>> e9e590a6abc5d8d93e14174ec34f14b9b75ebb15
 
 termArray = myOnto.terms()
 for curTerm in termArray:
@@ -56,6 +77,7 @@ for curTerm in termArray:
         except:
             pass
     insertEntity(curTerm.id, curTerm.name, curTerm.namespace, definition, definition_ref)
+<<<<<<< HEAD
     # xrefs
     if curTerm.xrefs:
         try:
@@ -84,3 +106,15 @@ for curTerm in termArray:
         except KeyError:
             print("Error REL on ", curTerm.name, curTerm.relationships)
             
+=======
+    if curTerm.xrefs:
+        try:
+            iterator = map(lambda xref: xref.id, curTerm.xrefs )
+            for ref in  list(iterator):
+                insertXref(curTerm.id,ref)
+        except:
+            pass
+    
+
+
+>>>>>>> e9e590a6abc5d8d93e14174ec34f14b9b75ebb15
