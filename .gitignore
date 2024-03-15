@@ -1,3 +1,5 @@
 .venv/*
 owl_file/*
 data_file/*
+onto01.db
+onto01.db*

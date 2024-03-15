@@ -1,15 +1,10 @@
-CREATE TABLE namespace (
-	namespece_ID INTEGER PRIMARY KEY AUTOINCREMENT,
-	namespace TEXT
-);
-
 CREATE TABLE entity (
 	id TEXT,
 	name TEXT,
 	definition TEXT,
-	namespace_id INTEGER,
-	CONSTRAINT entity_PK PRIMARY KEY (id),
-	CONSTRAINT entity_FK FOREIGN KEY (namespace_id) REFERENCES namespace(namespece_ID)
+	definition_ref TEXT,
+	namespace TEXT,
+	CONSTRAINT entity_PK PRIMARY KEY (id)
 );
 
 CREATE TABLE synonyms (
@@ -31,3 +26,11 @@ CREATE TABLE relations (
 	relation_name TEXT,
 	CONSTRAINT relations_FK FOREIGN KEY (main_ID) REFERENCES entity(id)
 );
+
+
+
+
+DELETE FROM xrefs;
+DELETE FROM relations;
+DELETE FROM synonyms;
+DELETE FROM entity;
