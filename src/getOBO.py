@@ -10,8 +10,8 @@ ontologyList = json.loads(ontologyListJson)['ontologies']
 #pp.pprint(ontologyList)
 # http://purl.obolibrary.org/obo/pw.owl'
 
-#importantOnto = ['bfo','cob','clo','bto','pw','chebi','doid','dron']
-importantOnto = ['pw','dron']
+importantOnto = ['bfo','ado','duo','proco','cob','clo','bto','dideo','pw','chebi','doid','dron', 'ncbitaxon', 'uberon', 'ro', 'chiro']
+#importantOnto = ['pw','dron']
 
 for onto in ontologyList:
     if onto['id'] in importantOnto :

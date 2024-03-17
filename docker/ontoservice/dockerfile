@@ -1,0 +1,14 @@
+# set base image (host OS)
+FROM python:3.8
+
+# set the working directory in the container
+WORKDIR /code
+
+# install dependencies
+RUN pip install uvicorn && pip install fastapi && pip install pandas && pip install pronto && pip install owlready2
+RUN mkdir /code/src && mkdir /code/owl_file && mkdir /code/logs
+
+
+# command to run on container start
+ENTRYPOINT ["tail", "-f", "/dev/null"]
+#CMD [ "python", "./server.py" ]

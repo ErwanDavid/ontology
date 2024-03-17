@@ -1,5 +1,7 @@
 .venv/*
 owl_file/*
 data_file/*
-onto01.db
-onto01.db*
+docker/docker_neo/.env
+*.db
+nohup.out
+src/__pycache__/*

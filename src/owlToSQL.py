@@ -7,65 +7,53 @@ ontoFile = os.path.abspath("./owl_file/" + sys.argv[1] + ".owl")
 print("Use", ontoFile)
 myOnto = Ontology(ontoFile)
 
-conn = sqlite3.connect("onto01.db")
-<<<<<<< HEAD
+conn = sqlite3.connect("data_file/onto02.db")
 # require the table from crTable_onto.sql to exist
 
-def insertEntity(ID, name, ns, definition, definition_ref):
+def execAnCommit(sql, dataset, doCommit):
+    cur = conn.cursor()
+    cur.execute(sql, dataset)
+    if doCommit:
+        conn.commit()
+
+
+def insertEntity(ID, name, ns, definition, definition_ref,doCommit):
     entitySet = (ID, name, ns, definition, definition_ref)
     sql = ''' INSERT or IGNORE INTO entity(id,name, namespace, definition, definition_ref)
               VALUES(?,?,?,?,?) '''
-    cur = conn.cursor()
-    cur.execute(sql, entitySet)
-    conn.commit()
+    execAnCommit(sql, entitySet,doCommit)
 
-def insertXref(mainID, refID):
+
+def insertXref(mainID, refID,doCommit):
     xrefSet=(mainID, refID)
     sql = ''' INSERT INTO xrefs(main_ID,xref_ID)
               VALUES(?,?) '''
-    cur = conn.cursor()
-    cur.execute(sql, xrefSet)
-    conn.commit()
+    execAnCommit(sql, xrefSet,doCommit)
 
 
-def insertRelation(mainID, curType, curName, curID):
+def insertRelation(mainID, curType, curName, curID,doCommit):
     relationSet=(mainID, curType, curName, curID)
     sql = ''' INSERT INTO relations (main_ID, related_ID, related_name, relation_name)
               VALUES(?,?,?,?) '''
-    cur = conn.cursor()
-    cur.execute(sql, relationSet)
-    conn.commit()
+    execAnCommit(sql, relationSet,doCommit)
 
-def insertSyn(mainID, synName):
+def insertSyn(mainID, synName,doCommit):
     synSet=(mainID, synName)
     sql = ''' INSERT INTO synonyms(main_ID,syn_name)
               VALUES(?,?) '''
-    cur = conn.cursor()
-    cur.execute(sql, synSet)
-    conn.commit()
-=======
-
-
-def insertEntity(ID, name, ns, definition, definition_ref):
-    entitySet = (ID, name, ns, definition, definition_ref)
-    sql = ''' INSERT INTO entity(id,name, namespace, definition, definition_ref)
-              VALUES(?,?,?,?,?) '''
-    cur = conn.cursor()
-    cur.execute(sql, entitySet)
-    conn.commit()
-
-def insertXref(mainID, refID):
-    xrefSet=(mainID, refID)
-    sql = ''' INSERT INTO xref(main_ID,xref_ID)
-              VALUES(?,?) '''
-    cur = conn.cursor()
-    cur.execute(sql, xrefSet)
-    conn.commit()
-
->>>>>>> e9e590a6abc5d8d93e14174ec34f14b9b75ebb15
+    execAnCommit(sql, synSet,doCommit)
 
 termArray = myOnto.terms()
+doCommit = False
+cpt = 0
 for curTerm in termArray:
+    cpt += 1
+    if cpt > 100:
+        print('+')
+        doCommit = True
+        cpt = 0
+    else:
+        doCommit = False
     # Main entity # Todo : obsolet flag 
     definition = re.sub(r'[^A-Za-z0-9\.\,]+',' ', str(curTerm.definition))
     definition_ref = ''
@@ -76,14 +64,13 @@ for curTerm in termArray:
             defition_ref = ' '.join(list(iterator2))
         except:
             pass
-    insertEntity(curTerm.id, curTerm.name, curTerm.namespace, definition, definition_ref)
-<<<<<<< HEAD
+    insertEntity(curTerm.id, curTerm.name, curTerm.namespace, definition, definition_ref, doCommit)
     # xrefs
     if curTerm.xrefs:
         try:
             iterator = map(lambda xref: xref.id, curTerm.xrefs )
             for ref in iterator:
-                insertXref(curTerm.id,ref)
+                insertXref(curTerm.id, ref, doCommit)
         except:
             pass
     # Synonymes
@@ -91,7 +78,7 @@ for curTerm in termArray:
         iterator = map(lambda syn: syn.description, curTerm.synonyms )
         #iterator2 = map(lambda xref: re.search('\w+:\w+\-', xref).group(), iterator )
         for curSyn in iterator:
-            insertSyn(curTerm.id,curSyn)
+            insertSyn(curTerm.id, curSyn, doCommit)
     
     if curTerm.relationships : 
         try:
@@ -102,19 +89,7 @@ for curTerm in termArray:
                 val = relVal.pop()
                 curID = val.id
                 curName = val.name
-                insertRelation(curTerm.id, curType, curName, curID)
+                insertRelation(curTerm.id, curType, curName, curID, doCommit)
         except KeyError:
             print("Error REL on ", curTerm.name, curTerm.relationships)
             
-=======
-    if curTerm.xrefs:
-        try:
-            iterator = map(lambda xref: xref.id, curTerm.xrefs )
-            for ref in  list(iterator):
-                insertXref(curTerm.id,ref)
-        except:
-            pass
-    
-
-
->>>>>>> e9e590a6abc5d8d93e14174ec34f14b9b75ebb15
