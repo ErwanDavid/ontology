@@ -8,6 +8,7 @@ services:
                   args:
                   - NODE_ENV=local
                   dockerfile: ./dockerfile
+            hostname: ontoservice
             ports:
                   - 8000:8000
             volumes:
@@ -18,6 +19,7 @@ services:
                   args:
                   - NODE_ENV=local
                   dockerfile: ./dockerfile
+            hostname: myneo
             ports:
                   - 7474:7474
                   - 7687:7687

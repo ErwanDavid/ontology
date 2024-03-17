@@ -1,8 +1,6 @@
 from urllib.request import urlopen
 import urllib.request
 import json
-#import pandas as pd
-import pprint as pp
 
 response = urlopen("https://obofoundry.org/registry/ontologies.jsonld")
 ontologyListJson = response.read()
