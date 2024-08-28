@@ -78,6 +78,19 @@ $ curl http://localhost:8000/countnode
 {"number":902354}
 ````
 
+### optionnal
+
+Remove node that have no labels
+
+````
+$ curl http://localhost:8000/delnolabel_owl 
+{"remove":"done"}
+$ curl http://localhost:8000/countnode
+{"number":201056}
+
+````
+
+
 ### Enjoy
 
  Go to the interface :
