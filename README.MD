@@ -14,7 +14,8 @@ In the docker folder :
 ## Usage
 
 ### set up
-Go to the docker folder  & run 
+- Clone the repo
+- Go to the docker folder  & run 
 ````
 docker compose  up
 ````
@@ -32,7 +33,7 @@ d22e393879bc   docker-ontoservice   "uvicorn main:app --…"   52 seconds ago   
  - docker-ontoservice is a fast api docker that allow to easilly interact witht he other one
  - docker-myneo is a neo4j server that has the neosemantic plugin installed (but not initialised)
 
- ### initialise
+ ### Initialise
 
  To interact with the neo4j server, you should use the ontoservice API.
  By default : 
@@ -47,7 +48,7 @@ $  curl http://localhost:8000/init_db
 {"init":"Done"}
 ````
 
-### data loading
+### Data loading
 
 We can now use the /add_owl/{onto_code} end point where onto_code is the ontology ID  that can be found in the main obo page https://obofoundry.org/ or in the json version https://obofoundry.org/registry/ontologies.jsonld
 
@@ -64,6 +65,53 @@ $ curl http://localhost:8000/countnode
 {"number":262}
 ````
 
+Or in your neo4j browser : 
+````
+// Count all nodes
+MATCH (n) RETURN count(n)
+╒════════╕
+│count(n)│
+╞════════╡
+│262     │
+└────────┘
+
+// Count all relationships
+MATCH ()-->() RETURN count(*);
+╒════════╕
+│count(*)│
+╞════════╡
+│473     │
+└────────┘
+
+MATCH (n) RETURN count(labels(n)), labels(n);
+
+╒════════════════╤══════════════════════════════════╕
+│count(labels(n))│labels(n)                         │
+╞════════════════╪══════════════════════════════════╡
+│1               │["_GraphConfig"]                  │
+├────────────────┼──────────────────────────────────┤
+│85              │["Resource"]                      │
+├────────────────┼──────────────────────────────────┤
+│118             │["Resource", "Axiom"]             │
+├────────────────┼──────────────────────────────────┤
+│22              │["Resource", "AnnotationProperty"]│
+├────────────────┼──────────────────────────────────┤
+│1               │["Resource", "Ontology"]          │
+├────────────────┼──────────────────────────────────┤
+│35              │["Resource", "Class"]             │
+└────────────────┴──────────────────────────────────┘
+````
+
+And looking at the graph :  Go to the interface :
+````
+ http://<docker server>:7474/browser/
+````
+ Example of BFO ontology
+
+![alt text](img/bfo_onto.png "Example of BFO ontology")
+
+What is related and how ?
+![alt text](img/db.schema_bof.png "What is related and how ?")
 
 
  note that by default there is no auth
@@ -78,7 +126,7 @@ $ curl http://localhost:8000/countnode
 {"number":902354}
 ````
 
-### optionnal
+### Optionnal
 
 Remove node that have no labels
 
@@ -93,10 +141,15 @@ $ curl http://localhost:8000/countnode
 
 ### Enjoy
 
- Go to the interface :
- http://<docker server>:7474/browser/
+
 MATCH p = (Class {label:'ammonium chloride'})-[r]->(m) return * limit 50
 
 MATCH p = (Class {label:'tartaric acid'})-[r]->(m) return * limit 50
+
+![alt text](img/tartric_acid.png "tartaric acid and subclasses")
+
+
+MATCH (n1)-[r]->(n2) where n1.label contains 'cid'  RETURN r, n1, n2 LIMIT 25
+
 
 

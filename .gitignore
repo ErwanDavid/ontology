@@ -6,3 +6,5 @@ docker/docker_neo/.env
 nohup.out
 src/__pycache__/*
 src/.venv/*
+ontologies.jsonld
+ontologies.yml
