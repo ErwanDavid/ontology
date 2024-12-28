@@ -5,6 +5,8 @@ docker/docker_neo/.env
 *.db
 nohup.out
 src/__pycache__/*
-src/.venv/*
+src/venv/*
+src/*log
+src/owl_file/*
 ontologies.jsonld
 ontologies.yml
